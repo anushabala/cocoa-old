@@ -1,8 +1,7 @@
 {
   "values": {
-    "person": ["Alice", "Bob", "Carol", "Doug", "Edward", "Fiona", "Genevieve", "Herbert", "Ian", "Jill", "Kennedy", "Lisa", "Molly", "Nathan", "Oscar", "Paul"],
+    "person": ["Alice", "Bob", "Carol", "Doug"],
     "major": ["computer science", "mathematics", "philosophy", "linguistics"],
-    "company": ["Microsoft", "Google", "Apple", "Facebook", "Uber", "Dropbox", "Intel", "Sony", "Panasonic"],
     "school": ["Stanford", "MIT", "Harvard", "Brown", "University of California Berkeley"],
     "hobby": ["hiking", "surfing", "cooking", "reading", "biking"],
     "time_pref": ["morning", "evening"],
@@ -12,8 +11,6 @@
     {"name": "Name", "value_type": "person", "unique": true},
     {"name": "Bachelors institution", "value_type": "school", "unique": false},
     {"name": "Bachelors major", "value_type": "major", "unique": false},
-    {"name": "Masters education", "value_type": "school", "unique": false},
-    {"name": "Masters major", "value_type": "major", "unique": false},
     {"name": "Hobby", "value_type": "hobby", "unique": false},
     {"name": "Time preference", "value_type": "time_pref", "unique": false},
     {"name": "Location preference", "value_type": "loc_pref", "unique": false}
