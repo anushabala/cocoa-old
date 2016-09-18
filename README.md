@@ -1,3 +1,7 @@
+# Prerequisite
+
+Latest Tensorflow (bleeding-edge version). If you're on the NLP cluster, you can run it on Ubuntu machines (e.g. john) by `source activate /u/hehe/tf-latest-cpu`.  
+
 Initialize:
 
     mkdir output
