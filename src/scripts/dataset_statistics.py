@@ -9,17 +9,17 @@ from itertools import izip
 from src.model.preprocess import word_to_num
 import random
 import matplotlib
+font_size = 15
+matplotlib.rcParams.update(
+    {k: font_size for k in ('font.size', 'axes.labelsize', 'xtick.labelsize', 'ytick.labelsize', 'legend.fontsize')})
 import matplotlib.pyplot as plt
 from itertools import izip
 import numpy as np
 
-font_size = 12
-matplotlib.rcParams.update(
-    {k: font_size for k in ('font.size', 'axes.labelsize', 'xtick.labelsize', 'ytick.labelsize', 'legend.fontsize')})
 
 NO_ALPHA_MENTION = 'no_mention'
 alpha_labels_to_values = {NO_ALPHA_MENTION: -1., 'least_uniform': 0., 'medium': 0.5, 'most_uniform': 1.}
-alpha_values_to_labels = {-1.: NO_ALPHA_MENTION, 0.: 'least_uniform', 0.5: 'medium', 1.: 'most_uniform'}
+alpha_values_to_labels = {-0.5: '', 0.: 'least_uniform', 0.5: 'medium', 1.: 'most_uniform', 1.5:''}
 
 START = '<s>'
 END = '</s>'
@@ -484,51 +484,43 @@ def update_item_stats(item_stats_map, first_mentioned_type, first_mentioned_attr
     sorted_occurrences = list(sorted(list(occurrences_set)))
     if first_mentioned_attribute in repeated_vals.keys():
         pos = sorted_occurrences.index(repeated_vals[first_mentioned_attribute]) + 1
-        item_stats_map.append((float(pos) / float(len(sorted_occurrences)), num_items))
+        val = 0.5
+        if pos == len(sorted_occurrences) - 1:
+            val = 1.0
+        elif pos == 0:
+            val = 0.
+        item_stats_map.append((val, num_items))
 
 
 def plot_alpha_stats(alpha_stats, save_path):
     plt.figure()
-    data_with_counts = {}
-    for key in alpha_stats:
-        if key not in data_with_counts.keys():
-            data_with_counts[key] = 0.
+    data_with_counts = []
+    for (alpha, num_items) in alpha_stats:
+        data_with_counts.append(alpha)
+    sorted_x = [x for x in sorted(alpha_values_to_labels.keys())]
+    plt.hist(data_with_counts, rwidth=0.7, align='left')
 
-        data_with_counts[key] += 1.
-
-    max_size = 2500
-    x_y = [x for x in data_with_counts.keys()]
-    x_vals = [x[1] for x in x_y]
-    y_vals = [x[0] for x in x_y]
-    total = len(alpha_stats)
-    sizes = [max_size * data_with_counts[key] / total for key in x_y]
-    plt.scatter(x_vals, y_vals, c='m', s=sizes, alpha=0.5)
-
-    sorted_x = [x for x in sorted(alpha_values_to_labels.keys()) if x != -1.]
-    plt.yticks(sorted_x, [alpha_values_to_labels[x] for x in sorted_x], rotation=45)
-    plt.ylabel("Uniformness of first mentioned attribute")
-    plt.xlabel("# of items in KB")
+    plt.xticks(sorted_x, [alpha_values_to_labels[x] for x in sorted_x])
+    plt.xlabel("Uniformness of the first mentioned attribute")
+    plt.ylabel("# of conversations")
+    plt.tight_layout()
     plt.savefig(save_path)
 
 
 def plot_num_item_stats(item_stats_map, save_path):
     plt.figure()
-
-    data_with_counts = {}
+    item_frequencies = {-0.5:'', 0.: 'least_frequent', 0.5: 'medium', 1.0: 'most frequent', 1.5:''}
+    data_with_counts = []
     for (key, num_items) in item_stats_map:
-        if (key, num_items) not in data_with_counts.keys():
-            data_with_counts[(key, num_items)] = 0.0
-        data_with_counts[(key, num_items)] += 1.
-    max_size = 5000
-    x_y = [x for x in data_with_counts.keys()]
-    x_vals = [x[1] for x in x_y]
-    y_vals = [x[0] for x in x_y]
-    total = sum([data_with_counts[key] for key in x_y])
-    sizes = [max_size * data_with_counts[key] / total for key in x_y]
-    plt.scatter(x_vals, y_vals, c='m', s=sizes, alpha=0.5)
-    plt.yticks([0.05, 0.55, 1.0], ["least_frequent", "medium", "most_frequent"], rotation=45)
-    plt.ylabel("Frequency of first mentioned attribute")
-    plt.xlabel("# of items in KB")
+        data_with_counts.append(key)
+
+    print data_with_counts
+    plt.hist(data_with_counts, rwidth=1.0, align='left' )
+    sorted_x = list(sorted(item_frequencies.keys()))
+    plt.xticks(sorted_x, [item_frequencies[k] for k in sorted_x])
+    plt.xlabel("Frequency of the first mentioned attribute")
+    plt.ylabel("# of conversations")
+    plt.tight_layout()
     plt.savefig(save_path)
 
 
